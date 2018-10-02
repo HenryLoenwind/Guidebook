@@ -14,3 +14,11 @@
 *.bak
 *.rhl
 /run
+
+\.classpath
+
+\.project
+
+\.settings/
+
+bin/

@@ -1,4 +1,5 @@
-<book title="Guidebook Manual" cover="gbook:covers/default" fontSize="0.6">
+<?xml version="1.0" encoding="UTF-8"?>
+<book:book title="Guidebook Manual" cover="gbook:covers/default" fontSize="0.6" xmlns:book="http://guidebook/guidebook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://guidebook/guidebook book.xsd ">
 
   <include ref="gbook:xml/standard.xml" />
 
@@ -303,4 +304,4 @@
   <stack-links>
     <stack item="minecraft:coal">:recipes</stack>
   </stack-links>
-</book>
+</book:book>

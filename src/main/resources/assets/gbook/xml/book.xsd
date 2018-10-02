@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://guidebook/guidebook" elementFormDefault="unqualified" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://guidebook/guidebook">
+
+    <complexType name="bookType">
+      <sequence minOccurs="1" maxOccurs="unbounded">
+        <choice>
+          <element name="include" type="tns:includeType"></element>
+          <element name="template" type="tns:templateType"></element>
+          <element name="chapter" type="tns:chapterType">
+            <key name="sectionID">
+              <selector xpath="./section | ./page"/>
+              <field xpath="@id"/>
+            </key>
+          </element>
+          <element name="stack-links" type="tns:stack-linksType"></element>
+          <element name="conditions" type="tns:conditionsType"></element>
+        </choice>
+      </sequence>
+      <attribute name="title" type="string" use="required"></attribute>
+      <attribute name="cover" type="tns:resourceLocFileType" use="optional"></attribute>
+      <attribute name="fontSize" type="float" use="optional"></attribute>
+      <attribute name="home" type="tns:sectionRefType" use="optional"></attribute>
+      <attribute name="dependencies" type="tns:modidListType" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="includeType">
+      <attribute name="ref" type="tns:resourceLocFileType" use="required"></attribute>
+    </complexType>
+
+    <complexType name="templateType">
+      <attribute name="id" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="chapterType">
+      <sequence minOccurs="1" maxOccurs="unbounded">
+        <choice>
+          <element name="page" type="tns:pageType"></element>
+          <element name="section" type="tns:sectionType"></element>
+        </choice>
+      </sequence>
+      <attributeGroup ref="tns:idAndCondition"></attributeGroup>
+    </complexType>
+
+    <attributeGroup name="idAndCondition">
+      <attribute name="id" type="tns:chapterRefType" use="optional"></attribute>
+      <attribute name="condition" type="tns:conditionRefType" use="optional"></attribute>
+    </attributeGroup>
+
+    <complexType name="stack-linksType">
+      <sequence>
+        <element name="stack" type="tns:stackType" minOccurs="1" maxOccurs="unbounded"></element>
+      </sequence>
+    </complexType>
+
+    <complexType name="stackType">
+      <simpleContent>
+        <extension base="tns:sectionRefType">
+          <attribute name="item" type="tns:resourceLocType" use="required"></attribute>
+          <attribute name="meta" type="tns:metaType" use="optional" default="0"></attribute>
+        </extension>
+      </simpleContent>
+    </complexType>
+
+    <complexType name="conditionsType">
+    </complexType>
+
+    <complexType name="pageType">
+      <sequence minOccurs="1" maxOccurs="unbounded">
+        <choice>
+          <element name="section-break"></element>
+          <element name="p"></element>
+          <element name="title"></element>
+          <element name="space"></element>
+          <element name="group"></element>
+          <any namespace="##other"><!-- templates and custom elements. ugly. --></any>
+        </choice>
+      </sequence>
+      <attributeGroup ref="tns:idAndCondition"></attributeGroup>
+    </complexType>
+
+    <complexType name="sectionType">
+      <complexContent>
+        <extension base="tns:pageType"></extension>
+      </complexContent>
+    </complexType>
+
+    <simpleType name="resourceLocFileType">
+        <restriction base="string">
+          <pattern value="[a-z0-9]+:[a-z0-9_/.]+"></pattern>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="resourceLocType">
+        <restriction base="string">
+          <pattern value="[a-z0-9]+:[a-z0-9_]+"></pattern>
+        </restriction>
+    </simpleType>
+
+    <simpleType name="sectionRefType">
+        <restriction base="string">
+            <!-- TODO -->
+        </restriction>
+    </simpleType>
+
+    <simpleType name="chapterRefType">
+        <restriction base="string">
+            <!-- TODO -->
+        </restriction>
+    </simpleType>
+
+    <simpleType name="conditionRefType">
+        <restriction base="string">
+            <!-- TODO -->
+        </restriction>
+    </simpleType>
+
+    <simpleType name="metaType">
+      <union memberTypes="tns:metaIntType tns:metaWildcardType"></union>
+    </simpleType>
+
+    <simpleType name="metaIntType">
+      <restriction base="integer">
+        <minInclusive value="0"></minInclusive>
+        <maxInclusive value="32768"></maxInclusive>
+      </restriction>
+    </simpleType>
+
+    <simpleType name="metaWildcardType">
+      <restriction base="string">
+        <enumeration value="*"></enumeration>
+      </restriction>
+    </simpleType>
+
+    <simpleType name="modidListType">
+        <restriction base="string">
+          <pattern value="[a-z0-9]+(,[a-z0-9]+)*"></pattern>
+        </restriction>
+    </simpleType>
+
+    <element name="book" type="tns:bookType" >
+      <key name="chapterID">
+        <selector xpath="./chapter"/>
+        <field xpath="@id"/>
+      </key>
+      <key name="conditionID">
+        <selector xpath="./condition/*"/>
+        <field xpath="@name"/>
+      </key>
+      <keyref name="conditionRef" refer="tns:conditionID">
+        <selector xpath="./chapter"/>
+        <field xpath="@condition"/>
+      </keyref> 
+    </element>
+</schema>
